@@ -3,7 +3,7 @@
 
 ---
 
-**Integrantes:** Franco Gusberti ,Sanchez Joaquin
+**Integrantes:** Sanchez Joaquin
 **Dataset:** `customer_behavior_dataset.csv`  
 **Herramientas:** Python 3.14, Pandas, NumPy  
 **Repositorio:** https://github.com/frangusberti/Ciencia-De-Datos-TP
@@ -13,7 +13,7 @@
 ## 1. Extracción de Datos
 
 **Fecha:** 01/05/2026  
-**Responsable:** Franco Gusberti
+**Responsable:**
 
 ### 1.1 Fuente de datos
 - Archivo: `customer_behavior_dataset.csv`
