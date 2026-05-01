@@ -3,7 +3,7 @@
 
 ---
 
-**Integrantes:** Franco Gusberti  
+**Integrantes:** Franco Gusberti ,Sanchez Joaquin
 **Dataset:** `customer_behavior_dataset.csv`  
 **Herramientas:** Python 3.14, Pandas, NumPy  
 **Repositorio:** https://github.com/frangusberti/Ciencia-De-Datos-TP
