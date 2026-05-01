@@ -1,0 +1,32 @@
+Les dejamos también la descripción de cada una de las columnas:
+
+ID: Identificador del cliente.
+Year_Birth: Año de nacimiento del cliente.
+Education: Nivel educativo del cliente.
+Marital_Status: Estado civil del cliente.
+Income: Ingreso anual del hogar del cliente.
+Kidhome: Cantidad de niños en el hogar del cliente.
+Teenhome: Cantidad de adolescentes en el hogar del cliente.
+Dt_Customer: Fecha de alta del cliente en la empresa.
+Recency: Días desde la última compra del cliente.
+Complain: 1 si el cliente realizó una queja en los últimos 2 años, 0 en caso contrario.
+MntWines: Monto gastado en vinos en los últimos 2 años.
+MntFruits: Monto gastado en frutas en los últimos 2 años.
+MntMeatProducts: Monto gastado en productos cárnicos en los últimos 2 años.
+MntFishProducts: Monto gastado en productos de pescado en los últimos 2 años.
+MntSweetProducts: Monto gastado en dulces en los últimos 2 años.
+MntGoldProds: Monto gastado en productos premium (oro) en los últimos 2 años.
+NumDealsPurchases: Cantidad de compras realizadas con descuento.
+AcceptedCmp1: 1 si el cliente aceptó la oferta en la campaña 1, 0 en caso contrario.
+AcceptedCmp2: 1 si el cliente aceptó la oferta en la campaña 2, 0 en caso contrario.
+AcceptedCmp3: 1 si el cliente aceptó la oferta en la campaña 3, 0 en caso contrario.
+AcceptedCmp4: 1 si el cliente aceptó la oferta en la campaña 4, 0 en caso contrario.
+AcceptedCmp5: 1 si el cliente aceptó la oferta en la campaña 5, 0 en caso contrario.
+Response: 1 si el cliente aceptó la oferta en la última campaña, 0 en caso contrario.
+NumWebPurchases: Cantidad de compras realizadas a través del sitio web.
+NumCatalogPurchases: Cantidad de compras realizadas mediante catálogo.
+NumStorePurchases: Cantidad de compras realizadas en tiendas físicas.
+NumWebVisitsMonth: Cantidad de visitas al sitio web en el último mes.
+Z_CostContact: Costo fijo asociado al contacto con el cliente.
+Z_Revenue: Ingreso fijo asociado a las interacciones con el cliente.
+Nota: Los features que indican valores monetarios no se especifica la moneda en la fuente del dataset, por lo que se consideran como unidades monetarias relativas para el análisis.

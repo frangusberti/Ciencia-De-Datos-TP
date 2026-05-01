@@ -3,21 +3,21 @@
 
 ---
 
-**Integrantes:** [Completar nombres]  
+**Integrantes:** Franco Gusberti  
 **Dataset:** `customer_behavior_dataset.csv`  
-**Herramientas:** Python 3.x, Pandas, NumPy  
-**Repositorio:** [URL del repo si aplica]
+**Herramientas:** Python 3.14, Pandas, NumPy  
+**Repositorio:** https://github.com/frangusberti/Ciencia-De-Datos-TP
 
 ---
 
 ## 1. Extracción de Datos
 
-**Fecha:** [Completar]  
-**Responsable:** [Nombre]
+**Fecha:** 01/05/2026  
+**Responsable:** Franco Gusberti
 
 ### 1.1 Fuente de datos
 - Archivo: `customer_behavior_dataset.csv`
-- Dimensiones originales: **[Completar] filas × [Completar] columnas**
+- Dimensiones originales: **2216 filas × 29 columnas**
 
 ### 1.2 Descripción general del dataset
 El dataset contiene información de clientes de una empresa de consumo, incluyendo datos demográficos, hábitos de compra y respuesta a campañas de marketing.
