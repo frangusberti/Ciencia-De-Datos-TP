@@ -40,7 +40,10 @@ Me puse a revisar los años de nacimiento y los sueldos para ver si había datos
   - `Total_Hijos`: Sumé los nenes (`Kidhome`) y los adolescentes (`Teenhome`) para tener un indicador rápido del tamaño de la familia.
   - `Gasto_Total`: Sumé todas las columnas de productos (vinos, carnes, frutas, etc.) para tener un número general de cuánta plata deja cada cliente y ver quiénes son los más valiosos.
 
-### [Franco] - 6. Registro de versiones
+### [Franco] - 6. Desafíos técnicos: Problemas con Git
+Más allá de la limpieza de datos, tuvimos un percance con el control de versiones. En un momento mergeamos la rama de un compañero (`joaquin`) directo a la rama `main` por accidente, lo que nos desarmó la estructura de ramas individuales que habíamos acordado. Tuvimos que parar la pelota, buscar cómo deshacer el lío (tuvimos que hacer un revert del commit del merge) y restaurar `main` a su estado correcto. Nos sirvió de lección para tener más cuidado antes de hacer un merge y mantener las ramas separadas hasta que el código esté 100% chequeado.
+
+### [Franco] - 7. Registro de versiones
 - **v1.0:** Cargué el archivo original y borré las columnas constantes (`Z_CostContact` y `Z_Revenue`) que no aportaban nada.
 - **v1.1:** Encontré los nulos y rellené casi todos con 0 para no perder filas útiles.
 - **v1.2 (02/05 14:15hs):** Rellené los nulos de `Income` con la mediana para esquivar outliers, borré las edades absurdas, acomodé las fechas, armé columnas nuevas estratégicas (Feature Engineering) y exporté el resultado impecable a `customer_behavior_LIMPIO.csv`.
