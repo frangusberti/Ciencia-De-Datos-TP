@@ -25,18 +25,18 @@ print(df.describe())
 #cuando hago Q3-Q1 obtengo el ancho del 50% central de la distribucion (viendolo sin los extremos que es donde estan los outliers) para obtener un resultado real y correcto sobre el cual se busca trabajar
 #los limites se definen como inferior: Q1-1.5*IQR y superior: Q3+1.5*IQR,  siendo 1.5 un valor empirico, que captura casi todo lo esperable en los datos "normales" y descarta los que no cumplen con las condiciones explicitadas
 
-def deteccion_outliers_iqr(df, columna):
-    Q1 = df[columna].quantile(0.25)
-    Q3 = df[columna].quantile(0.75)
+def deteccion_outliers_iqr(df, column):
+    Q1 = df[column].quantile(0.25)
+    Q3 = df[column].quantile(0.75)
     IQR = Q3-Q1
     
     limite_inferior = Q1 - 1.5 * IQR
     limite_superior = Q3 + 1.5 * IQR
     
-    outliers = df[(df[columna] < limite_inferior) | (df[columna] > limite_superior)] 
+    outliers = df[(df[column] < limite_inferior) | (df[column] > limite_superior)] 
     #con esta linea de codigo puedo filtrar los datos (de cada columna) tal que cumpla con ambas condiciones impuestas y si difiere, lo descarta. Trabaja sobre el data frame de todo el csv, y por dentro del mismo, sobre los data frame de cada columna
     
-    print(f"\n--- {columna} ---")
+    print(f"\n--- {column} ---")
     print(f"Q1: {Q1}, Q3: {Q3}, IQR: {IQR}")
     print(f"Límites: [{limite_inferior}, {limite_superior}]")
     print(f"Outliers encontrados {len(outliers)}")
@@ -48,10 +48,17 @@ def deteccion_outliers_iqr(df, columna):
 #mentira me los muestra en cantidad no se leer. Ademas seria una carga enorme para mi compu que me muestre por columna TODOS los outliers (hay columnas que tienen >60 e incluso una con >1000) y ya con ver 10 outliers que me devuelva (ej: outliers_income = -1300, 1 millon, -4000000 etc)
 #mentira devuelta no se leer, pq las columnas que yo estaba hablando en el renglon anterior (no las de count mean std etc sino las que aparecen al principio de todo cuando corro el codigo) SON CANTIDAD DE VALORES NO NULOS DE CADA COLUMNA!!!!! estoy medio quemada de la cabeza por Dios....
 
-print(df[df["Year_Birth"]<1930]) #para observar valores irreales de fechas de nacimiento
+print(df[df["Year_Birth"]<1930]) #para observar valores irreales de fechas de nacimiento (negativos, decimales no hay creo pero por las dudas los transformo en enteros veo como hago eso)
 print(df[df["Income"]<0]) #para ver igresos economicos menores a cero, puesto que no puede haber montos de dinero negativos en ingresos economicos (a menos que la culmna indique balance de cuenta o deudas por ejemplo)
 
-#junto valores
+#junto valores de gastos por que tienen todos algo en comun: no se pueden admitir valores menores a cero y son categorias de gastos en productos/ alimentos para la cotidianeidad (por eso no lo junto con la columna Income o Year_Birth) ademas quiero tener una mejor organizacion de los datos y si puedo juntar categorias mejor (siempre y cuando tenga sentido juntarlas ya sea por categoria compartida, limites compartidos etc)
+#defino columna total de gastos constituida por cada una de las categorias de gastos:  
+
+gastos_cotidianos = ["MntWines", "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds"]
+for col in gastos_cotidianos:
+    negativos = df[df[col] < 0] #define las columnas con valores negativos
+    if len(negativos) > 0: #define que si hay columnas que cumple la condicion anterior, va mostrarse que columna es y cuantos valores negativos posee
+        print(f"{col} tiene {len(negativos)} valores negativos")
 
 
  

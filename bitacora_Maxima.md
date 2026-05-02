@@ -39,5 +39,9 @@
   - Se implementó la lógica de filtrado de datos utilizando operadores booleanos (`|`) para identificar los valores que exceden estos límites, y se configuró un reporte en consola para mostrar los resultados y la cantidad de outliers encontrados por columna.
 - **Interpretación de salidas e Inspección manual:**
   - Se revisaron los resultados de la consola, clarificando la diferencia entre el conteo de valores nulos y los outliers reales devueltos por la función.
-  - Se añadieron filtros manuales (`df[df["Year_Birth"]<1930]` y `df[df["Income"]<0]`) para imprimir y visualizar en detalle los registros con anomalías lógicas (edades irreales e ingresos negativos).
-  - Se inició la preparación para analizar de forma conjunta las variables asociadas a gastos económicos del cliente.
+  - Se añadieron filtros manuales (`df[df["Year_Birth"]<1930]` y `df[df["Income"]<0]`) para imprimir y visualizar en detalle los registros con anomalías lógicas (edades irreales e ingresos negativos). Se dejó nota para forzar la conversión de `Year_Birth` a números enteros en caso de haber decimales.
+- **Análisis agrupado de Gastos Cotidianos:**
+  - Se agruparon todas las variables de consumos (`MntWines`, `MntFruits`, `MntMeatProducts`, `MntFishProducts`, `MntSweetProducts`, `MntGoldProds`) en una lista llamada `gastos_cotidianos`. El criterio fue lógico: ninguna categoría de compra física debería admitir valores negativos.
+  - Se construyó un bucle `for` que itera sobre la lista y reporta dinámicamente si alguna de esas columnas contiene valores menores a cero y, de ser así, cuántos casos presenta.
+- **Refactorización:**
+  - Se modificó el nombre del parámetro de la función de `columna` a `column` en `deteccion_outliers_iqr` para mejorar la nomenclatura.
