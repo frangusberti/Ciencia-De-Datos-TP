@@ -18,8 +18,6 @@ print(df.describe())
 #mas facil puede ser sin usar conceptos de PyE, lo hago directamente con definiciones y (longitud de cadena?) pero ahi tendria que hacer uno por uno creo asi que mejor usar PyE
 #no es por TCL de PyE, es por el rango intercuantilico (robustez) pq el TCL trabaja sobre aproximaciones del conjunto de datos y no sobre los datos de por si, mientras que el IQR trabaja sobre los datos (por eso en ejs de TCL de PyE ponen APROXIMADAMENTE para que nos demos cuenta que nos piden algo para el TCL)
 #pense en que IQR=IC pero esta mal pq IC trabaja asumiendo una probabilidad de que los datos esten en cierto rango "estoy segura que el 80% de los datos estan aca" y usa TCL batantes veces, viendo donde anda la media de los datos (mira incertidumbres sobre los parametros), pero IQR mira directamente los datos que esten bastante mas alejados de lo esperado
-
-
 #metodo IQR: quiero buscar donde vive la mayoria de los datos, sin usar promedios ni aproximaciones, sino analizando los datos individualmente
 #calculando Q1 (el 25% de los datos que estan por debajo del limite inferior ej: dato de Year_Birth: 1890, que es menor a 1930 si es establecido como minimo, imposible que esa persona este viva hoy en dia) y Q3 (el 25% de los datos que estan por encima del limite superior ej: dato de Year_Birth: 2036, esta claramente fuera del limite superior 2020 si este es definido de esa forma, imposible que esa persona exista pq faltan 10 años para su nacimiento)
 #cuando hago Q3-Q1 obtengo el ancho del 50% central de la distribucion (viendolo sin los extremos que es donde estan los outliers) para obtener un resultado real y correcto sobre el cual se busca trabajar
@@ -56,9 +54,52 @@ print(df[df["Income"]<0]) #para ver igresos economicos menores a cero, puesto qu
 
 gastos_cotidianos = ["MntWines", "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds"]
 for col in gastos_cotidianos:
-    negativos = df[df[col] < 0] #define las columnas con valores negativos
-    if len(negativos) > 0: #define que si hay columnas que cumple la condicion anterior, va mostrarse que columna es y cuantos valores negativos posee
-        print(f"{col} tiene {len(negativos)} valores negativos")
+    negativos_gastos_cotidianos = df[df[col] < 0] #define las columnas con valores negativos
+    if len(negativos_gastos_cotidianos) > 0: #define que si hay columnas que cumple la condicion anterior, va mostrarse que columna es y cuantos valores negativos posee
+        print(f"{col} tiene {len(negativos_gastos_cotidianos)} valores negativos")
+
+#junto las columnas de compras (Num....) debido a que pertenecen a la misma categoria y no pueden haber numeros de compras "negativos"
+#estas columnas tienen distintos enfoques (compras por catalogo, por visitas en la web etc) asi como las columnas de gastos que si bien eran de gastos, eran de distintas cosas
+#no me estarian pidiendo que muestre CADA valor de CADA columna pero por lo menos que se descarten los que son negativos es suficiente. Entonces el procedimiento del codigo seria similar, nomas que tengo que definir por nombres distintos
+#excluyo la columna NumVisitsMonth porque solo cuenta las veces que se visito la pagina web en el ultimo mes, y no aclara si hay compras o no
+
+compras_num = ["NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases"]
+for col in compras_num:
+    negativos_compras_num = df[df[col] < 0] #define las columnas con valores negativos 
+    if len(negativos_compras_num) > 0: #define que si hay columnas que cumplen la condicion anterior, va a mostrarse que columna es y cuantos valores negativos posee
+        print(f"{col} tiene {len(negativos_compras_num)} valores negativos")
+
+#corri el codigo, pero por lo visto (si es que esta bien hecho) no hay valores negativos en las columnas de compras_num. Creo que seria mejor agregar una funcion parecida a la anterior, pero que muestre las columnas que tienen valores inexistentes (habre visto algunos casilleros vacios) y algunos con valor = 0 directamente
+
+#compras_num = ["NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases"]
+#for col in compras_num:
+    #inexistentes_compras_num = df[df[col] < 0] #define las columnas con valores inexistentes 
+    #if len(inexistentes_compras_num) < 0: #define que si hay columnas que cumplen la condicion anterior, va a mostrarse que columna es y cuantos valores negativos posee
+        #print(f"{col} tiene {len(inexistentes_compras_num)} valores inexistentes")
+
+#bueno me parece que no hace falta porque esto esta establecido al principio del codigo con el print(nulos[nulos > 0]) pero lo dejo aca de decoracion asi se ven mis ideas y lo dejo con # para que solo sea texto
+#mas tarde veo que puedo hacer con estas columnas ademas de ver si tienen numeros negativos o no
+
+#voy probando con las columnas de AcceptedCmpi con i= 1, 2, 3, 4, 5 que son las columnas refiriendose a si los clientes aceptaron las ofertas o no, de las 5 campañas
+#me recuerda a PyE de la distribucion discreta de Bernoulli (univariada) donde los dos resultados posibles del experimento se representan con los valores 0 y 1 (cliente acepta la oferta= 1, cliente no acepta oferta= 0)
+#pero no se habla de una campaña unica, sino de 5 campañas. Supongo que son independientes entre si
+#propongo un codigo que en estas columnas muestre cuantas veces se aceptaron o rechazaron las ofertas de cada campaña
+#Voy a cambiar los nombres de las columnas 
+
+nombres_columnas = {
+    'AcceptedCmp1': 'Campaña 1',
+    'AcceptedCmp2': 'Campaña 2',
+    'AcceptedCmp3': 'Campaña 3',
+    'AcceptedCmp4': 'Campaña 4',
+    'AcceptedCmp5': 'Campaña 5'
+}
+df.rename(columns=nombres_columnas, inplace=True)
+
+campaigns = ["Campaña 1", "Campaña 2", "Campaña 3", "Campaña 4", "Campaña 5"]
+for col in campaigns:
+    accepted = (df[col] == 1).sum(axis = 0) #define las columnas en las cuales el cliente acepto la oferta de la campaña i
+    rejected = (df[col] == 0).sum(axis = 0) #define las columnas en las cuales el cliente rechazo la oferta de la campaña i
+    print(f"{col} {accepted} clientes aceptaron la oferta | {rejected} clientes rechazaron la oferta ")
 
 
- 
+   
