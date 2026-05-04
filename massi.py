@@ -101,5 +101,10 @@ for col in campaigns:
     rejected = (df[col] == 0).sum(axis = 0) #define las columnas en las cuales el cliente rechazo la oferta de la campaña i
     print(f"{col} {accepted} clientes aceptaron la oferta | {rejected} clientes rechazaron la oferta ")
 
-
-   
+#para la columna response como es sobre la aceptacion o rechazo de la campaña 5 tengo la siguiente idea:
+print(f"Respuesta ante la Campaña 5:")
+response = ["Campaña 5"]
+for col in response:
+    accepted = (df[col] == 1).sum(axis = 0) #define las columnas en las cuales el cliente acepto la oferta de la campaña 5
+    rejected = (df[col] == 0).sum(axis = 0) #define las columnas en las cuales el cliente rechazo la oferta de la campaña 5
+    print(f"{col} {accepted} clientes aceptaron la oferta | {rejected} clientes rechazaron la oferta ")
