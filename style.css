@@ -1,0 +1,13 @@
+code {
+    background-color: #f0f6ff !important;
+    color: #d73a49 !important;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-weight: bold;
+    border: 1px solid #c8e1ff;
+}
+
+h1, h2 {
+    color: #24292e;
+}
