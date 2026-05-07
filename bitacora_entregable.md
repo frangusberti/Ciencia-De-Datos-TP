@@ -1,5 +1,5 @@
 # Bitácora de Proyecto ETL
-**Integrantes:** Franco Gusberti, Máxima Risso Patrón y Joaquín Sanchez
+**Integrantes:** Franco Gusberti, Máxima Risso Patrón, Ian Francisco Gubert Gamba, Avril Milagros Costa  y Joaquín Sanchez
 **Dataset:** `customer_behavior_dataset.csv`
 
 ---
