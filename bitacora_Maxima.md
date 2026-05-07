@@ -45,3 +45,18 @@
   - Se construyó un bucle `for` que itera sobre la lista y reporta dinámicamente si alguna de esas columnas contiene valores menores a cero y, de ser así, cuántos casos presenta.
 - **Refactorización:**
   - Se modificó el nombre del parámetro de la función de `columna` a `column` en `deteccion_outliers_iqr` para mejorar la nomenclatura.
+
+---
+
+## 📅 4 de Mayo de 2026
+
+**Actividades realizadas:**
+- **Renombrado de columnas:**
+  - Se identificó la necesidad de cambiar los nombres de las columnas referidas a las campañas (de `AcceptedCmp1` a `Campaña 1`, etc.).
+  - Se corrigió un error de sintaxis en `df.rename()` al cambiar `inplace = true` por `inplace = True` (los booleanos en Python van con mayúscula).
+  - Se definió un diccionario (`nombres_columnas`) para mapear de manera estructurada los nombres originales con los nuevos nombres deseados.
+- **Actualización de iteraciones y cálculo de respuestas a campañas:**
+  - Se actualizó la lista `campaigns` para que contenga los nuevos nombres y así el bucle `for` pueda seguir iterando correctamente sobre el DataFrame para calcular e imprimir cuántos clientes aceptaron (`1`) y cuántos rechazaron (`0`) la oferta de cada campaña.
+- **Análisis de la columna `Response`:**
+  - Se planteó la duda sobre la diferencia entre las columnas de campañas históricas (ej. `AcceptedCmp5`) y la columna `Response`.
+  - Se dejó asentado en el código que parece redundante analizar `Response` si fuera equivalente a la campaña 5, abriendo el interrogante sobre su significado exacto en el dataset (típicamente, `Response` representa la variable objetivo u oferta de la última campaña o campaña piloto, mientras que las de 1 a 5 son el historial previo).
