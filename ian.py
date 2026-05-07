@@ -58,3 +58,22 @@ print(f"\nDimensiones finales de la copia: {df_copia.shape}")
 nombre_nuevo_archivo = "customer_behavior_dataset_copia.csv"
 df_copia.to_csv(nombre_nuevo_archivo, index=False)
 print(f"\n-> ¡Dataset modificado guardado exitosamente como '{nombre_nuevo_archivo}'!")
+
+# 5. TRATAMIENTO DE OUTLIERS
+print("\n--- Tratamiento de Outliers ---")
+if 'Year_Birth' in df_copia.columns:
+    outliers_birth = df_copia[df_copia['Year_Birth'] < 1930].shape[0]
+    df_copia = df_copia[df_copia['Year_Birth'] >= 1930]
+    print(f"-> Se eliminaron {outliers_birth} registros con 'Year_Birth' < 1930 (posibles errores).")
+
+if 'Income' in df_copia.columns:
+    outliers_income = df_copia[df_copia['Income'] > 150000].shape[0]
+    df_copia = df_copia[df_copia['Income'] <= 150000]
+    print(f"-> Se eliminaron {outliers_income} registros con 'Income' > 150000 (valores extremos).")
+
+print(f"\nDimensiones finales sin outliers: {df_copia.shape}")
+
+# Guardamos el dataset sin outliers
+nombre_archivo_final = "customer_behavior_dataset_sin_outliers.csv"
+df_copia.to_csv(nombre_archivo_final, index=False)
+print(f"\n-> ¡Dataset guardado exitosamente como '{nombre_archivo_final}'!")

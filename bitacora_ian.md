@@ -3,7 +3,7 @@
 
 ---
 
-**Integrantes:** Franco Gusberti  
+**Integrantes:** Ian Gubert Gamba  
 **Dataset:** `customer_behavior_dataset.csv`  
 **Herramientas:** Python 3.14, Pandas, NumPy  
 **Repositorio:** https://github.com/frangusberti/Ciencia-De-Datos-TP
@@ -13,7 +13,7 @@
 ## 1. Extracción de Datos
 
 **Fecha:** 01/05/2026  
-**Responsable:** Franco Gusberti
+**Responsable:** Ian Gubert Gamba
 
 ### 1.1 Fuente de datos
 - Archivo: `customer_behavior_dataset.csv`
@@ -58,25 +58,22 @@ El dataset contiene información de clientes de una empresa de consumo, incluyen
 
 ## 2. Exploración Inicial
 
-**Fecha:** [Completar]  
-**Responsable:** [Nombre]
+**Fecha:** 05/05/2026  
+**Responsable:** Ian Gubert Gamba
 
 ### 2.1 Valores faltantes detectados
 
 | Columna | Cantidad de nulos | Porcentaje | Decisión | Motivo |
 |---------|------------------|------------|----------|--------|
-| [Completar] | [Completar] | [Completar]% | [Eliminar/Rellenar con X] | [Motivo] |
-| | | | | |
-| | | | | |
+| `Income` | [Variable] | [Variable]% | Rellenar con la mediana | Imputación más robusta a outliers |
+| Varias (`Kidhome`, `MntMeatProducts`, etc.) | [Variable] | [Variable]% | Rellenar con 0 | La ausencia de datos indica un valor de cero |
 
 ### 2.2 Outliers detectados
 
 | Columna | Valor sospechoso | Cantidad | Decisión | Motivo |
 |---------|-----------------|----------|----------|--------|
-| `Year_Birth` | [Completar: ej. valores < 1930] | [Completar] | [Eliminar/Mantener] | [Motivo] |
-| `Income` | [Completar: ej. valores negativos] | [Completar] | [Eliminar/Corregir] | [Motivo] |
-| `MntWines` | [Completar: ej. valores negativos] | [Completar] | [Eliminar/Corregir] | [Motivo] |
-| | | | | |
+| `Year_Birth` | Valores < 1930 | Dinámico | Eliminar | Edades mayores a 96 años, posibles errores de carga. |
+| `Income` | Valores > 150000 | Dinámico | Eliminar | Ingresos extremadamente altos que pueden sesgar el análisis. |
 
 ### 2.3 Observaciones adicionales
 - [Completar: columnas constantes, valores raros, duplicados, etc.]
@@ -85,22 +82,22 @@ El dataset contiene información de clientes de una empresa de consumo, incluyen
 
 ## 3. Transformaciones Realizadas
 
-**Fecha:** [Completar]  
-**Responsable:** [Nombre]
+**Fecha:** 05/05/2026 - 06/05/2026  
+**Responsable:** Ian Gubert Gamba
 
 ### 3.1 Tratamiento de valores faltantes
 
 | Columna | Método aplicado | Valor utilizado | Justificación |
 |---------|----------------|-----------------|---------------|
-| [Completar] | [Mediana/Media/Moda/Eliminación] | [Valor] | [Por qué elegiste este método] |
-| | | | |
+| `Income` | Imputación por mediana | Mediana de la columna | Se eligió la mediana por ser menos sensible a valores atípicos. |
+| `Kidhome`, `MntMeatProducts`, `MntFishProducts`, `MntSweetProducts`, `NumDealsPurchases`, `AcceptedCmp3`, `AcceptedCmp2`, `Complain`, `Response` | Imputación por constante | 0 | La falta de datos en estas variables (compras, quejas o campañas) implica 0 ocurrencias. |
 
 ### 3.2 Tratamiento de outliers
 
 | Columna | Acción | Filas afectadas | Justificación |
 |---------|--------|-----------------|---------------|
-| [Completar] | [Eliminadas/Corregidas] | [Cantidad] | [Por qué] |
-| | | | |
+| `Year_Birth` | Eliminación de registros | Dinámico | Mantener un rango etario razonable para el análisis. |
+| `Income` | Eliminación de registros | Dinámico | Evitar distorsiones estadísticas por sueldos excepcionales. |
 
 ### 3.3 Conversión de tipos de datos
 
@@ -113,55 +110,46 @@ El dataset contiene información de clientes de una empresa de consumo, incluyen
 
 | Columna | Motivo de eliminación |
 |---------|-----------------------|
-| `Z_CostContact` | Columna constante (valor = 3 para todos los registros). No aporta información. |
-| `Z_Revenue` | Columna constante (valor = 11 para todos los registros). No aporta información. |
-| | |
+| `Z_CostContact` | Eliminada dinámicamente por tener un único valor en toda la columna. No aporta información. |
+| `Z_Revenue` | Eliminada dinámicamente por tener un único valor en toda la columna. No aporta información. |
 
-### 3.5 Columnas renombradas
-
-| Nombre original | Nombre nuevo | Motivo |
-|----------------|-------------|--------|
-| [Completar si aplicaste renombramientos] | | |
-
-### 3.6 Filas eliminadas
+### 3.5 Filas eliminadas
 
 | Motivo | Condición | Cantidad eliminada |
 |--------|-----------|-------------------|
-| [Completar] | [ej. Year_Birth < 1930] | [Cantidad] |
-| | | |
+| Edades ilógicas | `Year_Birth < 1930` | Dinámico |
+| Ingresos extremos | `Income > 150000` | Dinámico |
 
-### 3.7 Feature Engineering (nuevas columnas creadas)
+### 3.6 Feature Engineering (nuevas columnas creadas)
 
 | Nueva columna | Fórmula / Lógica | Justificación |
 |--------------|-------------------|---------------|
-| [Completar: ej. Edad] | [ej. 2026 - Year_Birth] | [Para qué sirve] |
-| | | |
+| `Edad` | `Año actual - Year_Birth` | Conocer la edad actual del cliente facilita la segmentación demográfica y el análisis directo. |
 
 ---
 
 ## 4. Carga de Datos
 
-**Fecha:** [Completar]  
-**Responsable:** [Nombre]
+**Fecha:** 05/05/2026 - 06/05/2026  
+**Responsable:** Ian Gubert Gamba
 
-- Archivo de salida: `customer_behavior_cleaned.csv`
-- Dimensiones finales: **[Completar] filas × [Completar] columnas**
-- Diferencia respecto al original: [Completar] filas eliminadas, [Completar] columnas eliminadas, [Completar] columnas nuevas
+- Archivo de salida final: `customer_behavior_dataset_sin_outliers.csv`
+- Dimensiones finales: **Dinámico filas × 28 columnas**
+- Diferencia respecto al original: Dinámico filas eliminadas por outliers, 2 columnas eliminadas (`Z_CostContact`, `Z_Revenue`), 1 columna nueva (`Edad`)
 
 ---
+
 
 ## 5. Registro de Versiones
 
 | Versión | Fecha y Hora | Responsable | Descripción del cambio |
 |---------|-------------|-------------|----------------------|
-| v1.0 | [DD/MM/YYYY HH:MM] | [Nombre] | Carga inicial y exploración del dataset |
-| v1.1 | [DD/MM/YYYY HH:MM] | [Nombre] | Tratamiento de valores faltantes |
-| v1.2 | [DD/MM/YYYY HH:MM] | [Nombre] | Detección y tratamiento de outliers |
-| v2.0 | [DD/MM/YYYY HH:MM] | [Nombre] | Feature engineering y limpieza final |
-| v2.1 | [DD/MM/YYYY HH:MM] | [Nombre] | Exportación del dataset limpio |
-
+| v1.0 | 01/05/2026 10:00 | Ian Gubert Gamba | Carga inicial y exploración del dataset |
+| v1.1 | 05/05/2026 20:35 | Ian Gubert Gamba | Automatización de limpieza, imputación de nulos y Feature Engineering (Creación de Edad) |
+| v1.2 | 05/05/2026 21:03 | Ian Gubert Gamba | Exportación del dataset modificado en `customer_behavior_dataset_copia.csv` |
+| v1.3 | 06/05/2026 23:25 | Ian Gubert Gamba | Tratamiento de outliers y exportación del dataset modificado en `customer_behavior_dataset_sin_outliers.csv` |
 ---
 
 ## 6. Conclusiones
 
-[Completar: resumen de lo realizado, decisiones clave tomadas, y estado final del dataset]
+Se logró automatizar gran parte de la etapa inicial de exploración, identificando dinámicamente columnas sin información útil y tratando de manera justificada los valores faltantes mediante imputaciones lógicas (relleno con 0) y estadísticas (mediana). Se incorporó nueva información creando la columna `Edad`, que aporta valor directo al análisis. Además, se garantizó la robustez de los datos eliminando registros atípicos (outliers) como edades improbables e ingresos extremos. El dataset final limpio y consolidado se guardó exitosamente y se encuentra listo para las siguientes etapas del proyecto.
