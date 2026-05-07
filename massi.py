@@ -111,3 +111,4 @@ for col in campaigns:
    #print(f"{col} {accepted} clientes aceptaron la oferta | {rejected} clientes rechazaron la oferta ")
 
 #igual esto ya se puede ver en la lista de las campañas asi que siento que es un despedicio hacer codigo sobre eso pero creo que no estoy entendiendo bien la diferencia...
+#pienso en que puedo hacer con las columnas de Z_costcontact y Z_Revenue por el tema del codigo python, por lo menos se que costos negativos no deberian existir pero no estoy segura como clasificarlos 

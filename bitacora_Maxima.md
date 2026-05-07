@@ -60,3 +60,16 @@
 - **Análisis de la columna `Response`:**
   - Se planteó la duda sobre la diferencia entre las columnas de campañas históricas (ej. `AcceptedCmp5`) y la columna `Response`.
   - Se dejó asentado en el código que parece redundante analizar `Response` si fuera equivalente a la campaña 5, abriendo el interrogante sobre su significado exacto en el dataset (típicamente, `Response` representa la variable objetivo u oferta de la última campaña o campaña piloto, mientras que las de 1 a 5 son el historial previo).
+
+---
+
+## 📅 7 de Mayo de 2026
+
+**Actividades realizadas:**
+- **Análisis agrupado de Hábitos de Compra (`compras_num`):**
+  - Se agruparon las variables relacionadas con el canal de compras (`NumDealsPurchases`, `NumWebPurchases`, `NumCatalogPurchases`, `NumStorePurchases`) bajo la misma lógica utilizada previamente en `gastos_cotidianos`.
+  - Se excluyó intencionalmente la variable `NumWebVisitsMonth` de este grupo debido a que representa visitas y no garantiza que se haya efectuado una compra.
+  - Se programó un bucle para verificar la existencia de valores negativos imposibles en estas columnas. Al correr el script se comprobó que no hay valores menores a cero.
+- **Reflexión sobre valores inexistentes/vacíos:**
+  - Se evaluó la posibilidad de escribir un bloque de código adicional para detectar valores inexistentes (vacíos) en las columnas de compras.
+  - Tras analizarlo, se concluyó que no era necesario debido a que este control ya se encuentra cubierto al principio del código mediante la instrucción `print(nulos[nulos > 0])`. Se dejó el código propuesto comentado a modo de borrador para registrar el hilo de pensamiento.
