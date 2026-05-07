@@ -6,40 +6,41 @@
 
 ## 📅 Fecha: 01/05/2026
 
-- Configuración del entorno de trabajo e importación de librerías (`pandas`, `numpy`, `datetime`).
-- Carga del archivo original `customer_behavior_dataset.csv`.
-- Ejecución de análisis preliminar estadístico mediante `df.describe()` y `df.isnull().sum()`.
-- Identificación y eliminación de filas completamente duplicadas utilizando la función `drop_duplicates()`.
-
-**Observaciones:** 
-Se detectaron múltiples valores nulos en el dataset y presencias de registros atípicos evidentes (edades desproporcionadas y valores negativos en columnas de ingresos y compras).
+- Se realizó la configuración del entorno de trabajo en Python, importando las librerías base para la manipulación y análisis de datos: `pandas` para el manejo de DataFrames, `numpy` para cálculos matemáticos, y `datetime` para la gestión de fechas.
+- Se cargó en memoria el archivo crudo `customer_behavior_dataset.csv`, el cual contaba originalmente con 2240 registros y 29 columnas con información demográfica, de comportamiento de compras y respuesta a campañas de marketing.
+- Se ejecutó un análisis preliminar estadístico mediante `df.describe()`, lo que permitió observar inmediatamente medidas de tendencia central y dispersión. A simple vista, este comando reveló inconsistencias críticas, como un valor mínimo en el año de nacimiento (Year_Birth) de 1893, indicando clientes de más de 130 años, y montos ilógicos en otras variables.
+- Mediante la instrucción `df.isnull().sum()` se expuso la presencia de múltiples valores nulos en distintas columnas clave, destacándose faltantes en ingresos (`Income`), cantidad de hijos (`Kidhome`, `Teenhome`), número de quejas (`Complain`) y respuestas a campañas promocionales.
+- Para asegurar la integridad de la base antes de comenzar a transformarla, se aplicó el método `drop_duplicates()`, identificando y eliminando cualquier fila completamente repetida que pudiera sesgar el análisis futuro.
 
 ---
 
 ## 📅 Fecha: 02/05/2026
 
-- **Análisis de tipo de dato:** Se decidió no utilizar un único método de imputación para todo el dataset.
-- **Imputación por lógica de negocio:** En columnas donde la ausencia del dato implica la no ocurrencia del evento (ej. cantidad de hijos, número de quejas, compras web), se imputó el valor `0`.
-- **Imputación estadística:** 
-  - Para los nulos en ingresos económicos numéricos (`Income`), se imputó el valor de la **mediana**, para evitar el sesgo que generarían los sueldos extremadamente altos en el cálculo de un promedio tradicional.
-  - Para los datos faltantes en categorías de texto, se imputó el valor de la **moda**.
-- **Transformación de tipos:** Se estandarizaron a enteros (`int`) columnas numéricas cargadas erróneamente como decimales (`float`).
+- Tras evaluar el reporte de nulos del día anterior, se decidió aplicar estrategias de imputación segmentadas según la naturaleza estadística de cada variable, en lugar de un enfoque genérico.
+- **Imputación por lógica de negocio:** En columnas donde la ausencia del dato implica lógicamente la no ocurrencia de un evento, se imputó directamente el valor `0`. Esto se aplicó a las variables `Kidhome` y `Teenhome` (ausencia de hijos), `Complain` (sin quejas reportadas), `Response` (sin participación) y los montos de gastos sin registrar.
+- **Imputación estadística de variables continuas:** Para la columna de ingresos económicos (`Income`), se descartó rellenar con ceros ya que afectaría gravemente el promedio. Se decidió utilizar la **mediana** (`median()`) sobre la media (`mean()`), justificando que la mediana es una medida mucho más robusta y menos sensible a ser arrastrada por los sueldos extremadamente altos (outliers) presentes en la base.
+- **Imputación estadística de variables categóricas:** Para los datos faltantes en variables cualitativas o de categorías, se optó por imputar el valor más frecuente del dataset utilizando la **moda** (`mode()[0]`).
+- **Limpieza de formatos de datos:** Se detectó que varias columnas numéricas (como cantidad de hijos y número de compras) estaban cargadas en el sistema como números decimales (`float`). Para mantener la coherencia semántica, se estandarizaron forzando su conversión al formato de número entero (`int` o `int64`).
 
 ---
 
 ## 📅 Fecha: 04/05/2026
 
-- **Detección estadística:** Se implementó el método del Rango Intercuartílico (IQR) para delimitar los datos esperados, descartando aproximaciones teóricas como el Teorema Central del Límite por ser menos precisas para este conjunto.
-- **Técnica de Capping:** En lugar de eliminar las filas con valores atípicos y reducir la base de datos, se aplicó la técnica de capping mediante la función `clip()`. Los valores extremos se ajustaron al límite numérico permitido por el rango IQR.
-- **Filtrado de errores de sistema:** Los datos irrefutablemente erróneos (como años de nacimiento anteriores a 1930 o ingresos negativos) fueron filtrados y eliminados.
-- **Depuración:** Se eliminaron las columnas `Z_CostContact` y `Z_Revenue`. El análisis demostró que ambas poseían varianza cero (un único valor constante para todos los clientes).
+- Se abordó el problema de los valores atípicos (outliers) identificados en la primera fase. Para su detección matemática, se implementó el método del Rango Intercuartílico (IQR). Se calcularon el primer y tercer cuartil (`Q1` al 25% y `Q3` al 75%) y se establecieron los límites inferior y superior utilizando la fórmula `Q1 - 1.5*IQR` y `Q3 + 1.5*IQR`.
+- **Técnica de Capping:** Se debatió si eliminar las filas que contenían atípicos, pero se concluyó que esto reduciría demasiado el volumen de datos disponibles. En su lugar, se aplicó la técnica de capping utilizando la función `clip()` de Pandas. Esta técnica permitió conservar todos los registros reemplazando únicamente los valores extremos por el valor del límite máximo o mínimo permitido por el rango IQR.
+- **Filtros lógicos directos:** A diferencia de los atípicos estadísticos, se aplicó un filtro directo de eliminación para los errores irrefutables de sistema. Mediante una máscara booleana se filtraron y eliminaron todos los registros donde `Year_Birth < 1930` (edades biológicamente improbables) y donde `Income < 0` (ingresos negativos inexistentes en la realidad).
+- **Reducción de dimensionalidad:** Se analizaron estadísticamente las variables `Z_CostContact` y `Z_Revenue`. Al calcular la varianza de ambas, el resultado fue nulo, lo que confirmó que contenían un único valor constante para los 2240 clientes (3 y 11 respectivamente). Dado que las columnas sin variabilidad no tienen poder predictivo ni aportan información analítica, fueron eliminadas definitivamente (`drop`).
 
 ---
 
 ## 📅 Fecha: 07/05/2026
 
-- **Fechas:** Se estandarizó la columna `Dt_Customer` al tipo `datetime` y se separó el año y el mes en nuevas columnas.
-- **Nuevas variables:** Se calculó la `edad` de los clientes (año 2026 - año de nacimiento). Se agruparon sumatorias totales para generar las columnas `gasto_total` y `total_compras`.
-- **Diccionario de datos:** Se tradujeron y renombraron las 29 columnas del DataFrame al español, adoptando una convención unificada en minúsculas.
-- **Auditoría:** Se programó un reporte de calidad automatizado para validar y emitir las dimensiones finales y la cantidad de nulos restantes antes de dar por finalizada la extracción.
-- **Cierre:** Exportación exitosa del documento final como `dataset_limpio.csv`.
+- Se procedió a enriquecer el dataset mediante técnicas de "Feature Engineering" para facilitar futuras visualizaciones y modelos de Machine Learning.
+- **Estandarización temporal:** Se transformó la columna `Dt_Customer` (que originalmente era de tipo `object`/texto) al formato estándar `datetime`. De esta columna, se logró extraer el año y el mes de registro del cliente en dos nuevas columnas independientes (`anio_cliente` y `mes_cliente`).
+- **Creación de nuevas variables analíticas:**
+  - Se creó la columna `edad` calculando la diferencia entre el año actual de análisis (2026) y la columna `Year_Birth`.
+  - Se creó la columna `gasto_total` mediante la sumatoria lineal de todas las categorías de consumo del cliente (`MntWines` + `MntFruits` + `MntMeatProducts` + `MntFishProducts` + `MntSweetProducts` + `MntGoldProds`).
+  - Se creó la columna `total_compras` sumando las interacciones por tipo de canal (`NumDealsPurchases` + `NumWebPurchases` + `NumCatalogPurchases` + `NumStorePurchases`).
+- **Renombrado y estandarización:** Se construyó un diccionario masivo para traducir y renombrar las 29 columnas originales al idioma español. Además, se forzó un formato estandarizado en minúsculas y separado por guiones bajos (por ejemplo: `MntWines` pasó a ser `gasto_vinos`, `Year_Birth` a `anio_nacimiento`, `AcceptedCmp1` a `acepto_campania_1`).
+- **Control de Calidad (QA):** Previo a la exportación, se programó un bloque de código para auditar el resultado. Este script imprime un reporte de consola detallando: número final de filas y columnas, confirmación de 0 valores nulos restantes, 0 filas duplicadas y promedios clave de la población.
+- **Cierre del proceso:** Se exportó el DataFrame totalmente procesado, validado y en español al disco bajo el nombre definitivo de `dataset_limpio.csv`.
