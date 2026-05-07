@@ -6,14 +6,14 @@
 ---
 
 ## 1. Exploración Inicial y Setup (Trabajo Conjunto)
-Ambos integrantes iniciaron el proyecto importando las librerías fundamentales (`pandas`, `numpy`, `datetime`) y realizando la carga del dataset original. 
+Franco y Máxima iniciaron el proyecto importando las librerías fundamentales (`pandas`, `numpy`, `datetime`) y realizando la carga del dataset original. 
 
-- **Análisis preliminar:** Ambos ejecutaron rutinas de conteo de nulos (`df.isnull().sum()`) y obtuvieron resúmenes estadísticos (`df.describe()`) para entender la forma de los datos y detectar inconsistencias obvias a simple vista (como valores mínimos ilógicos en años y sueldos).
+- **Análisis preliminar:** Franco y Máxima ejecutaron rutinas de conteo de nulos (`df.isnull().sum()`) y obtuvieron resúmenes estadísticos (`df.describe()`) para entender la forma de los datos y detectar inconsistencias obvias a simple vista (como valores mínimos ilógicos en años y sueldos).
 
 ---
 
 ## 2. Tratamiento de Valores Nulos
-Si bien ambos detectaron la presencia de valores faltantes (especialmente en las columnas de hijos, quejas y campañas), el enfoque para lidiar con ellos tuvo sus diferencias complementarias:
+Si bien Franco y Máxima detectaron la presencia de valores faltantes (especialmente en las columnas de hijos, quejas y campañas), el enfoque para lidiar con ellos tuvo sus diferencias complementarias:
 
 - **Enfoque analítico (Máxima):** Optó por realizar un análisis inicial filtrando únicamente las columnas que presentaban nulos, evaluando la conveniencia de calcular el porcentaje de completitud antes de tomar decisiones apresuradas sobre cómo imputarlos.
 - **Enfoque práctico de imputación (Franco):** Analizó la naturaleza de las variables y dedujo que muchos vacíos no eran errores, sino la simple "ausencia" del atributo (ej. no tener hijos o no haber presentado quejas). Por lo tanto:
@@ -23,7 +23,7 @@ Si bien ambos detectaron la presencia de valores faltantes (especialmente en las
 ---
 
 ## 3. Análisis y Limpieza de Outliers (Valores Atípicos)
-Ambos detectaron tempranamente la presencia de anomalías graves: personas nacidas antes de 1900 y clientes con ingresos negativos.
+Franco y Máxima detectaron tempranamente la presencia de anomalías graves: personas nacidas antes de 1900 y clientes con ingresos negativos.
 
 - **Detección robusta teórica y programática (Máxima):** Desarrolló un profundo debate estadístico. Descartó el uso del Teorema Central del Límite (TCL) para buscar anomalías, fundamentando que el uso de cuantiles es mucho más robusto. Creó la función automatizada `deteccion_outliers_iqr` basada en el Rango Intercuartílico (IQR) para reportar la cantidad de atípicos por cada columna. Además, iteró con bucles sobre grupos de consumo (`gastos_cotidianos`) y de hábitos (`compras_num`) para validar que no existieran valores de gasto menores a cero.
 - **Filtro directo (Franco):** Tomó la información de estas anomalías lógicas y aplicó reglas de negocio directas para limpiar el dataset funcional: filtró y eliminó definitivamente a cualquier usuario cuyo `Year_Birth` fuera anterior a 1930 y cuyo `Income` fuera menor a cero.
