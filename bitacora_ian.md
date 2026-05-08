@@ -153,3 +153,4 @@ El dataset contiene información de clientes de una empresa de consumo, incluyen
 ## 6. Conclusiones
 
 Se logró automatizar gran parte de la etapa inicial de exploración, identificando dinámicamente columnas sin información útil y tratando de manera justificada los valores faltantes mediante imputaciones lógicas (relleno con 0) y estadísticas (mediana). Se incorporó nueva información creando la columna `Edad`, que aporta valor directo al análisis. Además, se garantizó la robustez de los datos eliminando registros atípicos (outliers) como edades improbables e ingresos extremos. El dataset final limpio y consolidado se guardó exitosamente y se encuentra listo para las siguientes etapas del proyecto.
+.............
