@@ -40,7 +40,7 @@ df['Income'] = df['Income'].fillna(df['Income'].median())
 print("\nNulos despues de la limpieza:\n", df.isnull().sum()[df.isnull().sum() > 0])
 
 # --- TRATAMIENTO DE OUTLIERS ---
-# vi algunos años de nacimiento re bizarros tipo 1893 (gente de 130 años? rari). 
+# vi algunos años de nacimiento  tipo 1893 (gente de 130 años?). 
 # vuelo a los que nacieron antes de 1930 para limpiar la mugre
 df = df[df['Year_Birth'] >= 1930]
 
@@ -57,7 +57,7 @@ df['Dt_Customer'] = pd.to_datetime(df['Dt_Customer'], format='%d-%m-%Y', errors=
 # 1. Edad al año del tp (2026)
 df['Edad'] = 2026 - df['Year_Birth']
 
-# 2. Total de pibes en la casa (sumo los nenes y los adolescentes)
+# 2. Total de hijos en la casa (sumo los nenes y los adolescentes)
 df['Total_Hijos'] = df['Kidhome'] + df['Teenhome']
 
 # 3. Cuanta plata gastaron en total (sumo todos los Mnt)
