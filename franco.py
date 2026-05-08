@@ -2,70 +2,106 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-# Cargo el original usando la ruta completa
+# 1. EXTRACCIÓN (EXTRACT)
+# Carga del dataset original
 df_original = pd.read_csv(r"c:\Users\PC\OneDrive\Escritorio\CCiencia datos\customer_behavior_dataset.csv")
 
-# Creo una copia para trabajar así no rompo el original
+# Creación de una copia de trabajo para proteger los datos crudos
 df = df_original.copy()
 
-# chusmeo cuantos valores unicos tiene cada columna
+# 2. EXPLORACIÓN INICIAL
+print("--- EXPLORACIÓN INICIAL ---")
+print(f"Dimensiones iniciales: {df.shape}")
+
+# Conteo de valores únicos por columna para identificar variables constantes
+print("\nIdentificando variables sin variabilidad:")
 for col in df.columns:
-    print(f"{col}: {df[col].nunique()} valores únicos")
+    nunique = df[col].nunique()
+    if nunique <= 1:
+        print(f"- {col}: {nunique} valores únicos (Constante)")
 
-# veo q las colunmas z_costcontact y z_revenue no aportan informacion ya q tienen un solo valor único
-# asi q las vuelo nomas
-df = df.drop(["Z_CostContact", "Z_Revenue"], axis=1) 
+# 3. TRANSFORMACIONES (TRANSFORM)
+# 3.1 Eliminación de columnas constantes que no aportan información al modelo
+df = df.drop(columns=["Z_CostContact", "Z_Revenue"]) 
 
-# Contar nulos y porcentaje
-nulos = df.isnull().sum()
-print("\nNulos encontrados inicialmente:\n", nulos[nulos > 0])
+# 3.2 Tratamiento de valores faltantes (Nulos)
+nulos_iniciales = df.isnull().sum()
+print("\nValores nulos iniciales por columna:\n", nulos_iniciales[nulos_iniciales > 0])
 
-# veo q hay muchos valores nulos en varios datos, como kidhome, complain, acceptedcmp. 
-# Llegue a la conclusion de que no son errores sino que o no tienen hijos, o no hay quejas, o aceptó 0 campañas.
-# por lo tanto en lugar de eliminar, simplemente relleno los huecos con 0.
+# En las siguientes variables, los nulos representan lógicamente una cantidad de cero
 columnas_a_cero = [
     'Kidhome', 'MntMeatProducts', 'MntFishProducts', 
     'MntSweetProducts', 'NumDealsPurchases', 
     'AcceptedCmp3', 'AcceptedCmp2', 'Complain', 'Response'
 ]
-
-# Rellenar todas juntas
 df[columnas_a_cero] = df[columnas_a_cero].fillna(0)
 
-# me quedaron 24 nulos colgados en Income. 
-# como los sueldos pueden tener picos raros (outliers), le mando la mediana para que sea mas representativo
-df['Income'] = df['Income'].fillna(df['Income'].median())
+# Para 'Income' (Ingreso), se opta por imputar con la mediana para evitar el sesgo por ingresos atípicos muy altos
+mediana_ingreso = df['Income'].median()
+df['Income'] = df['Income'].fillna(mediana_ingreso)
 
-# Verificar que ya no queden nulos en el dataset
-print("\nNulos despues de la limpieza:\n", df.isnull().sum()[df.isnull().sum() > 0])
+# 3.3 Tratamiento de valores atípicos (Outliers) y Errores
+# A) Eliminación de filas duplicadas
+duplicados = df.duplicated().sum()
+if duplicados > 0:
+    df = df.drop_duplicates()
+    print(f"\nSe eliminaron {duplicados} filas duplicadas.")
 
-# --- TRATAMIENTO DE OUTLIERS ---
-# vi algunos años de nacimiento re bizarros tipo 1893 (gente de 130 años? rari). 
-# vuelo a los que nacieron antes de 1930 para limpiar la mugre
+# B) Fechas de nacimiento irreales (ej. 1893)
+# Se establece como límite el año 1930
 df = df[df['Year_Birth'] >= 1930]
 
-# y por las dudas me aseguro de que nadie tenga sueldo negativo porque no tiene sentido
+# C) Ingresos negativos (Error de carga)
 df = df[df['Income'] >= 0]
 
-# --- ARREGLO DE FECHAS ---
-# la fecha en la que se hicieron clientes está como texto, la paso a formato datetime posta
-df['Dt_Customer'] = pd.to_datetime(df['Dt_Customer'], format='%d-%m-%Y', errors='coerce')
-
-# --- CREACION DE COLUMNAS NUEVAS (FEATURE ENGINEERING) ---
-# me armo un par de columnas extra que nos van a servir para analizar mejor despues
-
-# 1. Edad al año del tp (2026)
-df['Edad'] = 2026 - df['Year_Birth']
-
-# 2. Total de pibes en la casa (sumo los nenes y los adolescentes)
-df['Total_Hijos'] = df['Kidhome'] + df['Teenhome']
-
-# 3. Cuanta plata gastaron en total (sumo todos los Mnt)
+# D) Corrección de gastos negativos (Error de carga)
 columnas_gasto = ['MntWines', 'MntFruits', 'MntMeatProducts', 
                   'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
+for col in columnas_gasto:
+    # Se eliminan los registros con gastos menores a 0 al no tener sentido lógico
+    df = df[df[col] >= 0]
+
+# E) Valores con decimales en variables que representan números enteros
+columnas_discretas = ['Recency', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases']
+for col in columnas_discretas:
+    # Redondeo y conversión a formato entero
+    df[col] = df[col].round(0).astype(int)
+
+# 3.4 Transformación de tipos de datos (Fechas)
+# Conversión de la columna fecha de formato string a datetime para su correcta manipulación
+df['Dt_Customer'] = pd.to_datetime(df['Dt_Customer'], format='%d-%m-%Y', errors='coerce')
+
+# 3.5 Ingeniería de características (Feature Engineering)
+# Creación de nuevas variables para mejorar la capacidad analítica del dataset
+
+# A) Edad del cliente proyectada al año 2026
+df['Edad'] = 2026 - df['Year_Birth']
+
+# B) Cantidad total de hijos en el hogar
+df['Total_Hijos'] = df['Kidhome'] + df['Teenhome']
+
+# C) Gasto total acumulado por cliente
 df['Gasto_Total'] = df[columnas_gasto].sum(axis=1)
 
-# --- EXPORTAR ---
-# ahora sí, con todo pipí cucú, lo guardo en un archivo nuevo limpio
-df.to_csv(r"c:\Users\PC\OneDrive\Escritorio\CCiencia datos\customer_behavior_LIMPIO.csv", index=False)
-print("\n¡Listo! Archivo limpio guardado en customer_behavior_LIMPIO.csv")
+# D) Cantidad total de compras
+columnas_compras = ['NumDealsPurchases', 'NumWebPurchases', 
+                    'NumCatalogPurchases', 'NumStorePurchases']
+df['Total_Compras'] = df[columnas_compras].sum(axis=1)
+
+# 3.6 Renombramiento de columnas para mayor claridad
+df = df.rename(columns={
+    'Dt_Customer': 'Fecha_Cliente',
+    'Year_Birth': 'Anio_Nacimiento',
+    'Kidhome': 'Ninos_Hogar',
+    'Teenhome': 'Adolescentes_Hogar',
+    'Recency': 'Dias_Ultima_Compra',
+    'Income': 'Ingreso_Anual'
+})
+
+print(f"\nDimensiones post-limpieza: {df.shape}")
+
+# 4. CARGA (LOAD)
+# Exportación del DataFrame ya procesado
+ruta_salida = r"c:\Users\PC\OneDrive\Escritorio\CCiencia datos\customer_behavior_LIMPIO.csv"
+df.to_csv(ruta_salida, index=False)
+print(f"\n¡Proceso ETL finalizado! Archivo guardado correctamente en:\n{ruta_salida}")
