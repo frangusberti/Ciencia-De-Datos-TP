@@ -1,9 +1,14 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
 
+# Determinar la ruta de la carpeta donde está este script
+dir_actual = os.path.dirname(os.path.abspath(__file__))
+
 # Cargar el dataset original
-df = pd.read_csv("customer_behavior_dataset.csv")
+ruta_csv = os.path.join(dir_actual, "customer_behavior_dataset.csv")
+df = pd.read_csv(ruta_csv)
 
 # CREAMOS LA COPIA PARA NO ALTERAR EL ORIGINAL
 df_copia = df.copy()
@@ -55,9 +60,9 @@ if 'Year_Birth' in df_copia.columns:
 print(f"\nDimensiones finales de la copia: {df_copia.shape}")
 
 # Guardamos la copia en un nuevo archivo CSV para mantener el original intacto
-nombre_nuevo_archivo = "customer_behavior_dataset_copia.csv"
+nombre_nuevo_archivo = os.path.join(dir_actual, "customer_behavior_dataset_copia.csv")
 df_copia.to_csv(nombre_nuevo_archivo, index=False)
-print(f"\n-> ¡Dataset modificado guardado exitosamente como '{nombre_nuevo_archivo}'!")
+print(f"\n-> ¡Dataset modificado guardado exitosamente en '{nombre_nuevo_archivo}'!")
 
 # 5. TRATAMIENTO DE OUTLIERS
 print("\n--- Tratamiento de Outliers ---")
@@ -74,6 +79,6 @@ if 'Income' in df_copia.columns:
 print(f"\nDimensiones finales sin outliers: {df_copia.shape}")
 
 # Guardamos el dataset sin outliers
-nombre_archivo_final = "customer_behavior_dataset_sin_outliers.csv"
+nombre_archivo_final = os.path.join(dir_actual, "customer_behavior_dataset_sin_outliers.csv")
 df_copia.to_csv(nombre_archivo_final, index=False)
-print(f"\n-> ¡Dataset guardado exitosamente como '{nombre_archivo_final}'!")
+print(f"\n-> ¡Dataset guardado exitosamente en '{nombre_archivo_final}'!")
